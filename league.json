@@ -1,0 +1,414 @@
+{
+ "season": "2026-27",
+ "_note": "First two picks per manager are Phase 1 (exclusive, 2 pts); last three are Phase 2 (shared, 1 pt).",
+ "teams": {
+  "OKC": {
+   "name": "Thunder",
+   "line": 61.5
+  },
+  "SAS": {
+   "name": "Spurs",
+   "line": 60.5
+  },
+  "NYK": {
+   "name": "Knicks",
+   "line": 52.5
+  },
+  "BOS": {
+   "name": "Celtics",
+   "line": 50.5
+  },
+  "PHI": {
+   "name": "76ers",
+   "line": 50.5
+  },
+  "CLE": {
+   "name": "Cavaliers",
+   "line": 48.5
+  },
+  "DET": {
+   "name": "Pistons",
+   "line": 48.5
+  },
+  "DEN": {
+   "name": "Nuggets",
+   "line": 48.5
+  },
+  "MIN": {
+   "name": "Timberwolves",
+   "line": 47.5
+  },
+  "HOU": {
+   "name": "Rockets",
+   "line": 47.5
+  },
+  "TOR": {
+   "name": "Raptors",
+   "line": 46.5
+  },
+  "MIA": {
+   "name": "Heat",
+   "line": 45.5
+  },
+  "LAL": {
+   "name": "Lakers",
+   "line": 45.5
+  },
+  "IND": {
+   "name": "Pacers",
+   "line": 43.5
+  },
+  "ATL": {
+   "name": "Hawks",
+   "line": 43.5
+  },
+  "ORL": {
+   "name": "Magic",
+   "line": 43.5
+  },
+  "POR": {
+   "name": "Trail Blazers",
+   "line": 41.5
+  },
+  "PHX": {
+   "name": "Suns",
+   "line": 39.5
+  },
+  "CHA": {
+   "name": "Hornets",
+   "line": 38.5
+  },
+  "UTA": {
+   "name": "Jazz",
+   "line": 37.5
+  },
+  "GSW": {
+   "name": "Warriors",
+   "line": 37.5
+  },
+  "WAS": {
+   "name": "Wizards",
+   "line": 34.5
+  },
+  "DAL": {
+   "name": "Mavericks",
+   "line": 33.5
+  },
+  "CHI": {
+   "name": "Bulls",
+   "line": 29.5
+  },
+  "MEM": {
+   "name": "Grizzlies",
+   "line": 29.5
+  },
+  "LAC": {
+   "name": "Clippers",
+   "line": 28.5
+  },
+  "NOP": {
+   "name": "Pelicans",
+   "line": 28.5
+  },
+  "MIL": {
+   "name": "Bucks",
+   "line": 25.5
+  },
+  "BKN": {
+   "name": "Nets",
+   "line": 24.5
+  },
+  "SAC": {
+   "name": "Kings",
+   "line": 20.5
+  }
+ },
+ "managers": [
+  {
+   "name": "Tony",
+   "nuggets": 35,
+   "picks": [
+    {
+     "team": "MIA",
+     "side": "over"
+    },
+    {
+     "team": "CLE",
+     "side": "over"
+    },
+    {
+     "team": "WAS",
+     "side": "over"
+    },
+    {
+     "team": "IND",
+     "side": "over"
+    },
+    {
+     "team": "PHX",
+     "side": "under"
+    }
+   ]
+  },
+  {
+   "name": "John",
+   "nuggets": 35,
+   "picks": [
+    {
+     "team": "HOU",
+     "side": "over"
+    },
+    {
+     "team": "TOR",
+     "side": "over"
+    },
+    {
+     "team": "ATL",
+     "side": "under"
+    },
+    {
+     "team": "IND",
+     "side": "over"
+    },
+    {
+     "team": "ORL",
+     "side": "over"
+    }
+   ]
+  },
+  {
+   "name": "Mark",
+   "nuggets": 51,
+   "picks": [
+    {
+     "team": "WAS",
+     "side": "under"
+    },
+    {
+     "team": "UTA",
+     "side": "over"
+    },
+    {
+     "team": "PHI",
+     "side": "under"
+    },
+    {
+     "team": "LAL",
+     "side": "under"
+    },
+    {
+     "team": "ATL",
+     "side": "under"
+    }
+   ]
+  },
+  {
+   "name": "SYP",
+   "nuggets": 25,
+   "picks": [
+    {
+     "team": "MEM",
+     "side": "over"
+    },
+    {
+     "team": "BKN",
+     "side": "over"
+    },
+    {
+     "team": "PHI",
+     "side": "under"
+    },
+    {
+     "team": "SAS",
+     "side": "under"
+    },
+    {
+     "team": "POR",
+     "side": "under"
+    }
+   ]
+  },
+  {
+   "name": "Elliot",
+   "nuggets": 40,
+   "picks": [
+    {
+     "team": "DET",
+     "side": "over"
+    },
+    {
+     "team": "DEN",
+     "side": "over"
+    },
+    {
+     "team": "NOP",
+     "side": "over"
+    },
+    {
+     "team": "MIL",
+     "side": "under"
+    },
+    {
+     "team": "IND",
+     "side": "over"
+    }
+   ]
+  },
+  {
+   "name": "Kevin",
+   "nuggets": 35,
+   "picks": [
+    {
+     "team": "LAL",
+     "side": "over"
+    },
+    {
+     "team": "BOS",
+     "side": "under"
+    },
+    {
+     "team": "PHI",
+     "side": "under"
+    },
+    {
+     "team": "LAC",
+     "side": "under"
+    },
+    {
+     "team": "WAS",
+     "side": "over"
+    }
+   ]
+  },
+  {
+   "name": "Jessica",
+   "nuggets": 30,
+   "picks": [
+    {
+     "team": "SAC",
+     "side": "over"
+    },
+    {
+     "team": "OKC",
+     "side": "under"
+    },
+    {
+     "team": "BOS",
+     "side": "over"
+    },
+    {
+     "team": "NOP",
+     "side": "over"
+    },
+    {
+     "team": "MIL",
+     "side": "over"
+    }
+   ]
+  },
+  {
+   "name": "Bryan",
+   "nuggets": 35,
+   "picks": [
+    {
+     "team": "CHA",
+     "side": "under"
+    },
+    {
+     "team": "SAS",
+     "side": "over"
+    },
+    {
+     "team": "LAC",
+     "side": "under"
+    },
+    {
+     "team": "PHX",
+     "side": "under"
+    },
+    {
+     "team": "ORL",
+     "side": "over"
+    }
+   ]
+  },
+  {
+   "name": "Hank",
+   "nuggets": 50,
+   "picks": [
+    {
+     "team": "DAL",
+     "side": "over"
+    },
+    {
+     "team": "NOP",
+     "side": "under"
+    },
+    {
+     "team": "POR",
+     "side": "over"
+    },
+    {
+     "team": "OKC",
+     "side": "over"
+    },
+    {
+     "team": "ORL",
+     "side": "under"
+    }
+   ]
+  },
+  {
+   "name": "Vivian",
+   "nuggets": 28,
+   "picks": [
+    {
+     "team": "NYK",
+     "side": "over"
+    },
+    {
+     "team": "CHA",
+     "side": "over"
+    },
+    {
+     "team": "CHI",
+     "side": "over"
+    },
+    {
+     "team": "SAS",
+     "side": "under"
+    },
+    {
+     "team": "IND",
+     "side": "under"
+    }
+   ]
+  },
+  {
+   "name": "Jerry",
+   "nuggets": 50,
+   "picks": [
+    {
+     "team": "GSW",
+     "side": "under"
+    },
+    {
+     "team": "PHI",
+     "side": "over"
+    },
+    {
+     "team": "BOS",
+     "side": "over"
+    },
+    {
+     "team": "MIN",
+     "side": "under"
+    },
+    {
+     "team": "SAS",
+     "side": "under"
+    }
+   ]
+  }
+ ]
+}
