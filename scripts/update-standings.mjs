@@ -4,7 +4,8 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 
 const SEASON = process.env.SEASON || "2027"; // ESPN uses the ending year: 2026-27 -> 2027
-const URL = `https://site.api.espn.com/apis/v2/sports/basketball/nba/standings?season=${SEASON}`;
+const SEASON_TYPE = process.env.SEASON_TYPE || "2"; // 1 = preseason, 2 = regular season, 3 = postseason
+const URL = `https://site.api.espn.com/apis/v2/sports/basketball/nba/standings?season=${SEASON}&seasontype=${SEASON_TYPE}`;
 const ALIAS = { GS: "GSW", NY: "NYK", SA: "SAS", NO: "NOP", UTAH: "UTA", WSH: "WAS" };
 
 const league = JSON.parse(readFileSync("league.json", "utf8"));
@@ -28,10 +29,21 @@ function gameDay() {
   return d.toISOString().slice(0, 10);
 }
 
-// Find every { team, stats } entry anywhere in the payload.
+// If a payload node declares a season type, return it as a number (else null).
+function typeOf(n) {
+  const v = n.seasonType ?? n.seasontype ?? n.season?.type;
+  if (v == null) return null;
+  const num = Number(typeof v === "object" ? v.type ?? v.id : v);
+  return Number.isFinite(num) ? num : null;
+}
+
+// Find every { team, stats } entry anywhere in the payload, skipping any subtree
+// that declares a season type other than the one we want (regular season).
 function collect(node, out = []) {
   if (Array.isArray(node)) node.forEach((n) => collect(n, out));
   else if (node && typeof node === "object") {
+    const t = typeOf(node);
+    if (t !== null && t !== Number(SEASON_TYPE)) return out;
     if (node.team && Array.isArray(node.stats)) out.push(node);
     for (const v of Object.values(node)) if (v && typeof v === "object") collect(v, out);
   }
@@ -45,8 +57,13 @@ const data = process.env.ESPN_FIXTURE
       return r.json();
     });
 
+const entries = collect(data);
+if (!entries.length) {
+  console.log(`No season-type ${SEASON_TYPE} standings yet — leaving standings.json unchanged.`);
+  process.exit(0);
+}
 const teams = {};
-for (const e of collect(data)) {
+for (const e of entries) {
   const raw = e.team.abbreviation;
   const ab = ALIAS[raw] || raw;
   if (!league.teams[ab]) continue;
