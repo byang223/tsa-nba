@@ -30,7 +30,7 @@ input[type=range]{width:min(360px,100%);vertical-align:middle}
 </style></head><body><main>
 <h1>🏀 NBA Over/Under Challenge</h1>
 <div class="mut" id="st"></div>
-<div class="card" style="margin-top:10px"><label class="mut">Demo season preview — games played: <b id="gv">0</b></label><br>
+<div class="card" id="demo" style="margin-top:10px;display:none"><label class="mut">Demo season preview — games played: <b id="gv">0</b></label><br>
 <input type="range" id="sl" min="0" max="82" value="0"> <span class="mut">(0 = live data)</span></div>
 
 <h2>Leaderboard</h2>
@@ -65,7 +65,8 @@ function render(){
   const cb=(fc.hs.includes(m.n)?1:0)+(fx.hs.includes(m.n)?1:0);
   return{m,lk:lk+cb,pj:pj+bon+cb,net:r6(net)}}).sort((a,b)=>b.pj-a.pj||b.net-a.net);
  const g0=Object.values(S).reduce((a,r)=>a+r[0]+r[1],0);
- $("#st").textContent=g0?(asOf?"Standings as of "+asOf:"Demo standings (simulated)"):"Season hasn't tipped off — all teams 0-0. Drag the slider to preview scoring.";
+ $("#st").textContent=g0?(asOf?"Standings as of "+asOf:"Demo standings (simulated)"):"Season hasn't tipped off — all teams 0-0.";
+ if(location.search.includes("demo"))$("#demo").style.display="";
  $("#lb").innerHTML=rows.map((x,i)=>`<tr class="${i>=rows.length-3?"bot":""}"><td>${i+1}</td><td><b>${x.m.n}</b></td><td>${x.lk}</td><td>${x.pj}</td><td>${sg(x.net)}</td><td>${x.m.nug}</td></tr>`).join("");
  const holders=(ts,over)=>ms.filter(m=>m.picks.some(p=>p.o===over&&ts.includes(p.t))).map(m=>m.n).join(", ")||"—";
  const card=(h,a,b)=>`<div class="card"><div class="mut">${h}</div><div class="big">${a}</div><div class="mut">${b}</div></div>`;
