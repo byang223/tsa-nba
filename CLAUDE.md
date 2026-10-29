@@ -12,7 +12,7 @@ step, no dependencies.
 | `league.json` | Hand-edited source of truth: every team's line and every manager's picks and nugget count. |
 | `standings.json` | Bot-written. `{ asOf, updated, teams: {ABBR: [W, L]}, decided: {ABBR: "YYYY-MM-DD"} }`. Don't hand-edit except to reset. |
 | `scripts/update-standings.mjs` | Node 18+ script, no deps. Fetches ESPN standings and rewrites `standings.json`. |
-| `.github/workflows/update-standings.yml` | Runs the script every 5 min (`*/5 * * * *`; GitHub often runs scheduled jobs late or skips them), plus manual dispatch, and commits if anything changed. |
+| `.github/workflows/update-standings.yml` | `workflow_dispatch` only (no GitHub cron). Triggered on a schedule by cron-job.org through the GitHub API, or by hand. Runs the script and commits if anything changed. One run at a time (`concurrency: standings`). |
 
 ## League rules (as the code implements them)
 
@@ -84,6 +84,9 @@ step, no dependencies.
   recomputed from the next run's date. The games-went-down check compares against the file, so
   resetting is also how you get past it.
 - **Force a refresh:** Actions tab → "Update standings" → Run workflow.
+- **External trigger:** cron-job.org sends `POST https://api.github.com/repos/byang223/tsa-nba/actions/workflows/update-standings.yml/dispatches`
+  with body `{"ref":"main"}` and a token with Actions read/write on this repo. If standings stop updating, check that
+  the cron-job.org job is still active and its token hasn't expired. Renaming the workflow file breaks that URL.
 - **Preview locally:** serve the folder (e.g. `npx serve .` or `python -m http.server`). Opening
   `index.html` as a file won't load the JSON, so it falls back to the embedded data with 0-0 records.
 

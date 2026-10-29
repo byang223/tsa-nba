@@ -1,18 +1,24 @@
 name: Update standings
+# Triggered externally (cron-job.org) via the GitHub API:
+#   POST /repos/byang223/tsa-nba/actions/workflows/update-standings.yml/dispatches  {"ref":"main"}
+# Also runnable by hand from the Actions tab.
 on:
-  schedule:
-    - cron: "*/5 * * * *"   # every 5 minutes
   workflow_dispatch: {}
 permissions:
   contents: write
+# One run at a time. A trigger that arrives mid-run waits; extra triggers replace the
+# waiting one, so bursts collapse into a single follow-up run instead of piling up.
 concurrency:
   group: standings
   cancel-in-progress: false
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 5   # a hung ESPN request shouldn't block the queue (default is 6 hours)
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}   # branch tip at start, not the commit from when this run was queued
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -22,4 +28,4 @@ jobs:
           git config user.name "standings-bot"
           git config user.email "actions@users.noreply.github.com"
           git add standings.json
-          git diff --cached --quiet || (git commit -m "Update standings" && git push)
+          git diff --cached --quiet || (git commit -m "Update standings" && git pull --rebase --quiet && git push)
