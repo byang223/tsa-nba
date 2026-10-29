@@ -146,9 +146,15 @@ for (const [t, [w, l]] of Object.entries(teams)) {
   }
 }
 
+// `updated` = when the data last changed (not when the bot last ran), so runs that
+// find nothing new leave the file untouched and the workflow doesn't commit.
+const canon = (o) => JSON.stringify(Object.keys(o).sort().map((k) => [k, o[k]]));
+const changed = canon(teams) !== canon(prevTeams) || canon(decided) !== canon(prev.decided || {});
+const updated = changed || !prev.updated ? new Date().toISOString() : prev.updated;
+const sortKeys = (o) => Object.fromEntries(Object.keys(o).sort().map((k) => [k, o[k]]));
 const asOf = lastSlate();
 writeFileSync(
   "standings.json",
-  JSON.stringify({ asOf, teams, decided }, null, 1) + "\n"
+  JSON.stringify({ asOf, updated, teams: sortKeys(teams), decided: sortKeys(decided) }, null, 1) + "\n"
 );
 console.log(`Wrote standings for ${Object.keys(teams).length} teams (${asOf}); decided: ${Object.keys(decided).length}`);

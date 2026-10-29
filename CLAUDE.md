@@ -10,7 +10,7 @@ step, no dependencies.
 |---|---|
 | `index.html` | The entire site: HTML, CSS and JS in one file. Reads `league.json` and `standings.json` at load. |
 | `league.json` | Hand-edited source of truth: every team's line and every manager's picks and nugget count. |
-| `standings.json` | Bot-written. `{ asOf, teams: {ABBR: [W, L]}, decided: {ABBR: "YYYY-MM-DD"} }`. Don't hand-edit except to reset. |
+| `standings.json` | Bot-written. `{ asOf, updated, teams: {ABBR: [W, L]}, decided: {ABBR: "YYYY-MM-DD"} }`. Don't hand-edit except to reset. |
 | `scripts/update-standings.mjs` | Node 18+ script, no deps. Fetches ESPN standings and rewrites `standings.json`. |
 | `.github/workflows/update-standings.yml` | Runs the script every 5 min (`*/5 * * * *`; GitHub often runs scheduled jobs late or skips them), plus manual dispatch, and commits if anything changed. |
 
@@ -41,7 +41,12 @@ step, no dependencies.
   decided on the same slate tie. A slate is the **ET tip-off date** of the deciding game, so a
   Friday night game that ends at 12:01am Saturday counts as Friday. The date comes from the
   game itself, not from when the bot ran, so run timing never affects it.
-- `asOf` is only a display label: before 4pm ET it shows yesterday's date (last finished slate).
+- `updated` is an ISO UTC timestamp of the last run where `teams` or `decided` actually changed.
+  The site shows it in the viewer's local time zone ("Standings updated Oct 28, 11:09 PM PDT").
+  It deliberately is **not** bumped on runs that find nothing new: the workflow commits whenever
+  `standings.json` changes, so a per-run timestamp would commit every 5 minutes.
+- `asOf` is a fallback label (used if `updated` is missing): before 4pm ET it shows yesterday's
+  date (last finished slate). It changes once a day, which causes one extra bot commit per day.
 - `?demo` in the URL shows a slider that simulates 0–82 games with deterministic fake standings
   (in demo mode `decided` values are game numbers, not dates). 0 = back to live data.
 - JSON is fetched with `cache: "no-store"` so Pages caching doesn't hide fresh standings.

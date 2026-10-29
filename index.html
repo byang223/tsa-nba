@@ -45,7 +45,7 @@ let T={OKC:["Thunder",61.5],SAS:["Spurs",60.5],NYK:["Knicks",52.5],BOS:["Celtics
 // name, nugget target, picks in draft order (first two = Phase 1 exclusive, 2 pts)
 const M=[["Tony",35,"MIA O,CLE O,WAS O,IND O,PHX U"],["John",35,"HOU O,TOR O,ATL U,IND O,ORL O"],["Mark",51,"WAS U,UTA O,PHI U,LAL U,ATL U"],["SYP",25,"MEM O,BKN O,PHI U,SAS U,POR U"],["Elliot",40,"DET O,DEN O,NOP O,MIL U,IND O"],["Kevin",35,"LAL O,BOS U,PHI U,LAC U,WAS O"],["Jessica",30,"SAC O,OKC U,BOS O,NOP O,MIL O"],["Bryan",35,"CHA U,SAS O,LAC U,PHX U,ORL O"],["Hank",50,"DAL O,NOP U,POR O,OKC O,ORL U"],["Vivian",28,"NYK O,CHA O,CHI O,SAS U,IND U"],["Jerry",50,"GSW U,PHI O,BOS O,MIN U,SAS U"]];
 let ms=M.map(([n,nug,p])=>({n,nug,picks:p.split(",").map((x,i)=>{const[t,s]=x.split(" ");return{t,o:s==="O",ph:i<2?2:1}})}));
-// standings.json (optional, same folder): {"asOf":"2027-01-05","teams":{"OKC":[30,8]},"decided":{"OKC":"2027-03-20"}}
+// standings.json (optional, same folder): {"asOf":"2027-01-05","updated":"2027-01-05T04:12:00.000Z","teams":{"OKC":[30,8]},"decided":{"OKC":"2027-03-20"}}
 let LS={},LD={},S={},D={},asOf="";
 const $=s=>document.querySelector(s),r6=x=>Math.round(x*1e6)/1e6,sg=x=>(x>0?"+":"")+x.toFixed(1);
 function info(t,over){const line=T[t][1],r=S[t]||[0,0],w=r[0],l=r[1],g=w+l,maxW=82-l;
@@ -65,7 +65,7 @@ function render(){
   const cb=(fc.hs.includes(m.n)?1:0)+(fx.hs.includes(m.n)?1:0);
   return{m,lk:lk+cb,pj:pj+bon+cb,net:r6(net)}}).sort((a,b)=>b.pj-a.pj||b.net-a.net);
  const g0=Object.values(S).reduce((a,r)=>a+r[0]+r[1],0);
- $("#st").textContent=g0?(asOf?"Standings as of "+asOf:"Demo standings (simulated)"):"Season hasn't tipped off — all teams 0-0.";
+ $("#st").textContent=g0?(asOf?(LUp?"Standings updated "+when(LUp):"Standings as of "+asOf):"Demo standings (simulated)"):"Season hasn't tipped off — all teams 0-0.";
  if(location.search.includes("demo"))$("#demo").style.display="";
  $("#lb").innerHTML=rows.map((x,i)=>`<tr class="${i>=rows.length-3?"bot":""}"><td>${i+1}</td><td><b>${x.m.n}</b></td><td>${x.lk}</td><td>${x.pj}</td><td>${sg(x.net)}</td><td>${x.m.nug}</td></tr>`).join("");
  const holders=(ts,over)=>ms.filter(m=>m.picks.some(p=>p.o===over&&ts.includes(p.t))).map(m=>m.n).join(", ")||"—";
@@ -83,8 +83,10 @@ function demo(g){const s={};for(const t in T){let h=0;for(const c of t)h=(h*31+c
 function demoD(v){const d={};for(let g=1;g<=v;g++){const s=demo(g);for(const t in T){if(d[t])continue;const[w,l]=s[t],L=T[t][1];if(w>L||82-l<L)d[t]=g}}return d}
 const lbl=d=>typeof d=="number"?"after game "+d:d;
 $("#sl").oninput=e=>{const v=+e.target.value;$("#gv").textContent=v;if(v){S=demo(v);D=demoD(v);asOf=""}else{S=LS;D=LD;asOf=LAsOf}render()};
-let LAsOf="";
-fetch("standings.json",{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{LS=S=j.teams||{};LD=D=j.decided||{};LAsOf=asOf=j.asOf||"";render()}).catch(()=>{});
+let LAsOf="",LUp="";
+// ISO timestamp -> e.g. "Oct 28, 11:09 PM PDT" in the viewer's own time zone
+const when=t=>{const d=new Date(t);return isNaN(d)?t:d.toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric",minute:"2-digit",timeZoneName:"short"})};
+fetch("standings.json",{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{LS=S=j.teams||{};LD=D=j.decided||{};LAsOf=asOf=j.asOf||"";LUp=j.updated||"";render()}).catch(()=>{});
 // league.json (optional, same folder) overrides the embedded lines and picks
 fetch("league.json",{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{const t={};for(const k in j.teams)t[k]=[j.teams[k].name,j.teams[k].line];T=t;ms=j.managers.map(m=>({n:m.name,nug:m.nuggets,picks:m.picks.map((p,i)=>({t:p.team,o:p.side==="over",ph:i<2?2:1}))}));render()}).catch(()=>{});
 render();
