@@ -12,7 +12,7 @@ step, no dependencies.
 | `league.json` | Hand-edited source of truth: every team's line and every manager's picks and nugget count. |
 | `standings.json` | Bot-written. `{ asOf, teams: {ABBR: [W, L]}, decided: {ABBR: "YYYY-MM-DD"} }`. Don't hand-edit except to reset. |
 | `scripts/update-standings.mjs` | Node 18+ script, no deps. Fetches ESPN standings and rewrites `standings.json`. |
-| `.github/workflows/update-standings.yml` | Runs the script every 3h (`15 */3 * * *` UTC), plus manual dispatch, and commits if anything changed. |
+| `.github/workflows/update-standings.yml` | Runs the script every 5 min (`*/5 * * * *`; GitHub often runs scheduled jobs late or skips them), plus manual dispatch, and commits if anything changed. |
 
 ## League rules (as the code implements them)
 
@@ -36,9 +36,12 @@ step, no dependencies.
   for when it's opened without the JSON files. `league.json` overrides it on load. If you change
   lines or picks, edit `league.json` **and** keep the embedded `T`/`M` in sync, or you'll get
   confusing behavior opening the file locally.
-- `decided[team]` records the **first day a team's line was settled** (either direction) and is
-  never overwritten. The site uses it for the First-to-Clinch/Eliminated bonuses. Dates are an
-  NBA "game day": anything detected before 4pm ET counts as the previous day.
+- `decided[team]` records the **slate a team's line was settled on** (either direction) and is
+  never overwritten. The site uses it for the First-to-Clinch/Eliminated bonuses, where picks
+  decided on the same slate tie. A slate is the **ET tip-off date** of the deciding game, so a
+  Friday night game that ends at 12:01am Saturday counts as Friday. The date comes from the
+  game itself, not from when the bot ran, so run timing never affects it.
+- `asOf` is only a display label: before 4pm ET it shows yesterday's date (last finished slate).
 - `?demo` in the URL shows a slider that simulates 0–82 games with deterministic fake standings
   (in demo mode `decided` values are game numbers, not dates). 0 = back to live data.
 - JSON is fetched with `cache: "no-store"` so Pages caching doesn't hide fresh standings.
@@ -55,6 +58,16 @@ step, no dependencies.
   any `league.json` team missing from ESPN, any team with more than 82 games, or total games
   going *down* vs. the previous `standings.json`. If ESPN has no regular-season data yet, it
   exits 0 without touching anything.
+- **Dating a decided line:** when a team's line newly becomes decided, the script fetches that
+  team's schedule (`.../nba/teams/{espnId}/schedule?season=2027&seasontype=2`), replays its
+  completed regular-season games in order, and takes the ET date of the game where the line
+  became settled. Safeguards:
+  - If the schedule's W-L doesn't match the standings (e.g. ESPN lists a game the standings
+    don't count, like the NBA Cup final), it uses the latest completed game's date and logs a
+    `::warning::`.
+  - If the lookup fails, the team is left undecided and retried next run (warning logged). It
+    never records a guessed date, since decided dates are permanent.
+  - ESPN team ids come from the standings payload (`team.id`).
 - Offline test: `ESPN_FIXTURE=fixture.json node scripts/update-standings.mjs` (run from repo root;
   the script reads/writes relative paths).
 
